@@ -24,3 +24,5 @@
 ## 分工說明
 - 組員 A：遊戲邏輯、配對判斷、嘗試次數功能
 - 組員 B：介面設計、難度切換、README 撰寫
+
+Add complete project README
