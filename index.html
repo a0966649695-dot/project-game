@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Memory Card Game</title>
+  <style>
+    body { font-family: Arial; text-align: center; }
+    .card {
+      width: 80px;
+      height: 80px;
+      display: inline-block;
+      margin: 10px;
+      background: #ccc;
+      font-size: 40px;
+      line-height: 80px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>記憶翻牌遊戲</h1>
+
+<div id="game"></div>
+
+<script>
+  const cards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
+  let flipped = [];
+
+  function shuffle(arr){
+    return arr.sort(() => 0.5 - Math.random());
+  }
+
+  function createGame(){
+    const game = document.getElementById('game');
+    shuffle(cards).forEach(symbol => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerText = '?';
+      card.onclick = () => flip(card, symbol);
+      game.appendChild(card);
+    });
+  }
+
+  function flip(card, symbol){
+    if(flipped.length < 2){
+      card.innerText = symbol;
+      flipped.push({card, symbol});
+    }
+    if(flipped.length === 2){
+      if(flipped[0].symbol !== flipped[1].symbol){
+        setTimeout(() => {
+          flipped.forEach(c => c.card.innerText = '?');
+          flipped = [];
+        }, 800);
+      } else {
+        flipped = [];
+      }
+    }
+  }
+
+  createGame();
+</script>
+
+</body>
+</html>
