@@ -11,7 +11,7 @@
     }
     button {
       padding: 8px 14px;
-      margin: 10px;
+      margin: 8px;
       border: none;
       border-radius: 6px;
       background: #4CAF50;
@@ -52,6 +52,7 @@
   <div>
     <button onclick="setEasy()">簡單模式</button>
     <button onclick="setHard()">困難模式</button>
+    <button onclick="setExtreme()">極度困難模式</button>
   </div>
 
   <p>
@@ -62,14 +63,18 @@
   <div id="game"></div>
 
   <script>
-    // ====== 遊戲狀態 ======
+    // ====== 卡片設定 ======
     let cards = [];
     const easyCards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
     const hardCards = ['🍎','🍎','🍌','🍌','🍇','🍇','🍉','🍉','🍓','🍓'];
+    const extremeCards = [
+      '🍎','🍎','🍌','🍌','🍇','🍇',
+      '🍉','🍉','🍓','🍓','🍒','🍒','🥝','🥝'
+    ];
 
+    // ====== 狀態 ======
     let flipped = [];
     let moves = 0;
-
     let time = 0;
     let timerId = null;
     let isFinished = false;
@@ -96,16 +101,14 @@
       });
     }
 
-    // ====== 開始遊戲（只會在選模式時呼叫） ======
+    // ====== 開始遊戲（只在選模式時） ======
     function startGame() {
       isFinished = false;
       flipped = [];
       moves = 0;
       $('moves').innerText = moves;
 
-      // ⚠️ 關掉舊的計時器（避免重複）
       if (timerId) clearInterval(timerId);
-
       time = 0;
       $('time').innerText = time;
 
@@ -143,14 +146,14 @@
       }
     }
 
-    // ====== 完成檢查 ======
+    // ====== 完成判斷 ======
     function checkWin() {
       const allCards = document.querySelectorAll('.card');
       const finished = [...allCards].every(c => c.innerText !== '?');
 
       if (finished) {
         isFinished = true;
-        clearInterval(timerId); // ✅ 完成就停表
+        clearInterval(timerId);
         alert(`完成！用時 ${time} 秒，翻牌 ${moves} 次`);
       }
     }
@@ -166,8 +169,10 @@
       startGame();
     }
 
-    // ❌ 注意：這裡「沒有」自動 startGame()
-    // 只有按按鈕才會開始計時
+    function setExtreme() {
+      cards = extremeCards;
+      startGame();
+    }
   </script>
 </body>
 </html>
