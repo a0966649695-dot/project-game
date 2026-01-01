@@ -1,3 +1,5 @@
+let moves = 0;
+
 let symbols = ['🍎','🍌','🍇','🍓','🍒','🥝'];
 let firstCard = null;
 let secondCard = null;
@@ -26,7 +28,10 @@ function setDifficulty(cardCount) {
   });
 }
 
-function flipCard(card) {
+function flip(card, symbol){
+  moves++;
+  document.getElementById('moves').innerText = moves;
+  
   if (lock || card.classList.contains('flipped') || tries <= 0) return;
 
   card.classList.add('flipped');
