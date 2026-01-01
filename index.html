@@ -42,6 +42,7 @@
 
     let time = 0;
     let timerId = null;
+    let isFinished = false;
 
     function $(id){ return document.getElementById(id); }
 
@@ -62,6 +63,7 @@
     }
 
     function startGame(){
+      isFinished = false;
       flipped = [];
       moves = 0;
       $('moves').innerText = moves;
@@ -78,6 +80,7 @@
     }
 
     function flip(card, symbol){
+      if(isFinished) return;
       if(card.innerText !== '?' || flipped.length >= 2) return;
 
       card.innerText = symbol;
@@ -88,6 +91,7 @@
 
       if(flipped.length === 2){
         const [a, b] = flipped;
+
         if(a.symbol !== b.symbol){
           setTimeout(() => {
             a.card.innerText = '?';
@@ -96,7 +100,19 @@
           }, 800);
         } else {
           flipped = [];
+          checkWin(); // ✅ 配對成功就檢查是否完成
         }
+      }
+    }
+
+    function checkWin(){
+      const allCards = document.querySelectorAll('.card');
+      const finished = [...allCards].every(card => card.innerText !== '?');
+
+      if(finished){
+        isFinished = true;
+        clearInterval(timerId); // ✅ 停止計時器
+        alert(`完成！用時 ${time} 秒，翻牌 ${moves} 次`);
       }
     }
 
@@ -108,4 +124,3 @@
   </script>
 </body>
 </html>
-
