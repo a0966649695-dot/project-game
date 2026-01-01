@@ -4,35 +4,65 @@
   <meta charset="UTF-8" />
   <title>記憶翻牌遊戲</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background:#f7f7f7; }
-    button { padding: 8px 14px; margin: 10px; border: none; border-radius: 6px; background:#4CAF50; color:#fff; cursor:pointer; }
-    button:hover { background:#45a049; }
-    #game { margin-top: 16px; }
-    .card{
-      width:80px; height:80px; margin:10px;
-      display:inline-flex; align-items:center; justify-content:center;
-      background:#fff; border-radius:10px; font-size:36px; cursor:pointer;
-      box-shadow:0 4px 8px rgba(0,0,0,.2);
-      transition:transform .2s;
-      user-select:none;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f7f7f7;
     }
-    .card:hover{ transform:scale(1.05); }
+    button {
+      padding: 8px 14px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    #game {
+      margin-top: 16px;
+    }
+    .card {
+      width: 80px;
+      height: 80px;
+      margin: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-radius: 10px;
+      font-size: 36px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,.2);
+      transition: transform .2s;
+      user-select: none;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
+
   <h1>記憶翻牌遊戲</h1>
+  <p>請先選擇難度開始遊戲</p>
 
   <div>
     <button onclick="setEasy()">簡單模式</button>
     <button onclick="setHard()">困難模式</button>
   </div>
 
-  <p>時間：<span id="time">0</span> 秒 ｜ 翻牌次數：<span id="moves">0</span></p>
+  <p>
+    時間：<span id="time">0</span> 秒 ｜ 
+    翻牌次數：<span id="moves">0</span>
+  </p>
 
   <div id="game"></div>
 
   <script>
-    // ====== 狀態 ======
+    // ====== 遊戲狀態 ======
     let cards = [];
     const easyCards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
     const hardCards = ['🍎','🍎','🍌','🍌','🍇','🍇','🍉','🍉','🍓','🍓'];
@@ -44,15 +74,19 @@
     let timerId = null;
     let isFinished = false;
 
-    function $(id){ return document.getElementById(id); }
+    function $(id) {
+      return document.getElementById(id);
+    }
 
-    function shuffle(arr){
+    function shuffle(arr) {
       return [...arr].sort(() => 0.5 - Math.random());
     }
 
-    function createGame(){
+    // ====== 建立遊戲 ======
+    function createGame() {
       const game = $('game');
       game.innerHTML = '';
+
       shuffle(cards).forEach(symbol => {
         const card = document.createElement('div');
         card.className = 'card';
@@ -62,15 +96,19 @@
       });
     }
 
-    function startGame(){
+    // ====== 開始遊戲（只會在選模式時呼叫） ======
+    function startGame() {
       isFinished = false;
       flipped = [];
       moves = 0;
       $('moves').innerText = moves;
 
-      if(timerId) clearInterval(timerId);
+      // ⚠️ 關掉舊的計時器（避免重複）
+      if (timerId) clearInterval(timerId);
+
       time = 0;
       $('time').innerText = time;
+
       timerId = setInterval(() => {
         time++;
         $('time').innerText = time;
@@ -79,20 +117,20 @@
       createGame();
     }
 
-    function flip(card, symbol){
-      if(isFinished) return;
-      if(card.innerText !== '?' || flipped.length >= 2) return;
+    function flip(card, symbol) {
+      if (isFinished) return;
+      if (card.innerText !== '?' || flipped.length >= 2) return;
 
       card.innerText = symbol;
-      flipped.push({card, symbol});
+      flipped.push({ card, symbol });
 
       moves++;
       $('moves').innerText = moves;
 
-      if(flipped.length === 2){
+      if (flipped.length === 2) {
         const [a, b] = flipped;
 
-        if(a.symbol !== b.symbol){
+        if (a.symbol !== b.symbol) {
           setTimeout(() => {
             a.card.innerText = '?';
             b.card.innerText = '?';
@@ -100,27 +138,36 @@
           }, 800);
         } else {
           flipped = [];
-          checkWin(); // ✅ 配對成功就檢查是否完成
+          checkWin();
         }
       }
     }
 
-    function checkWin(){
+    // ====== 完成檢查 ======
+    function checkWin() {
       const allCards = document.querySelectorAll('.card');
-      const finished = [...allCards].every(card => card.innerText !== '?');
+      const finished = [...allCards].every(c => c.innerText !== '?');
 
-      if(finished){
+      if (finished) {
         isFinished = true;
-        clearInterval(timerId); // ✅ 停止計時器
+        clearInterval(timerId); // ✅ 完成就停表
         alert(`完成！用時 ${time} 秒，翻牌 ${moves} 次`);
       }
     }
 
-    function setEasy(){ cards = easyCards; startGame(); }
-    function setHard(){ cards = hardCards; startGame(); }
+    // ====== 難度 ======
+    function setEasy() {
+      cards = easyCards;
+      startGame();
+    }
 
-    // 預設先開簡單
-    setEasy();
+    function setHard() {
+      cards = hardCards;
+      startGame();
+    }
+
+    // ❌ 注意：這裡「沒有」自動 startGame()
+    // 只有按按鈕才會開始計時
   </script>
 </body>
 </html>
