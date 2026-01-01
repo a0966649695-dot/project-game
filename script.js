@@ -84,3 +84,20 @@ function resetGame() {
 }
 
 setDifficulty(8);
+
+function startGame(level){
+  const game = document.getElementById('game');
+  game.innerHTML = '';
+  flipped = [];
+
+  let selectedCards = level === 'hard' ? hardCards : easyCards;
+
+  shuffle(selectedCards).forEach(symbol => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerText = '?';
+    card.onclick = () => flip(card, symbol);
+    game.appendChild(card);
+  });
+}
+
