@@ -1,3 +1,8 @@
+# 記憶翻牌遊戲（Memory Card Game）
+
+本專題為一款使用 HTML、CSS 與 JavaScript 製作的記憶翻牌小遊戲，
+玩家需在最短時間內配對所有相同圖案的卡片。
+
 # 記憶翻牌小遊戲（Memory Card Game）
 
 ## 專題簡介
