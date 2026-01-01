@@ -19,11 +19,13 @@
 </head>
 <body>
 
-<button onclick="location.reload()">重新開始</button>
 <h1>記憶翻牌遊戲</h1>
 <p>點擊卡片找出相同圖案</p>
 <p>時間：<span id="time">0</span> 秒</p>
 <p>翻牌次數：<span id="moves">0</span></p>
+<p>選擇難度：</p>
+<button onclick="startGame('easy')">簡單</button>
+<button onclick="startGame('hard')">困難</button>
 
 
 <div id="game"></div>
@@ -35,7 +37,8 @@ setInterval(() => {
   document.getElementById('time').innerText = time;
 }, 1000);
 
-  const cards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
+  const easyCards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
+  const hardCards = ['🍎','🍎','🍌','🍌','🍇','🍇','🍉','🍉'];
   let flipped = [];
 
   function shuffle(arr){
