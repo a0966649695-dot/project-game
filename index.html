@@ -26,6 +26,12 @@
 <div id="game"></div>
 
 <script>
+let time = 0;
+setInterval(() => {
+  time++;
+  document.getElementById('time').innerText = time;
+}, 1000);
+
   const cards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
   let flipped = [];
 
