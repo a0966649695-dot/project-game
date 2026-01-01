@@ -1,115 +1,111 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>Memory Card Game</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f7f7f7;
-  }
-
-  h1 {
-    margin-top: 20px;
-  }
-
-  button {
-    padding: 8px 14px;
-    margin: 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #45a049;
-  }
-
-  #game {
-    margin-top: 20px;
-  }
-
-  .card {
-    width: 80px;
-    height: 80px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    font-size: 36px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
-  }
-
-  .card:hover {
-    transform: scale(1.05);
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>記憶翻牌遊戲</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background:#f7f7f7; }
+    button { padding: 8px 14px; margin: 10px; border: none; border-radius: 6px; background:#4CAF50; color:#fff; cursor:pointer; }
+    button:hover { background:#45a049; }
+    #game { margin-top: 16px; }
+    .card{
+      width:80px; height:80px; margin:10px;
+      display:inline-flex; align-items:center; justify-content:center;
+      background:#fff; border-radius:10px; font-size:36px; cursor:pointer;
+      box-shadow:0 4px 8px rgba(0,0,0,.2);
+      transition:transform .2s;
+      user-select:none;
+    }
+    .card:hover{ transform:scale(1.05); }
+  </style>
 </head>
 <body>
+  <h1>記憶翻牌遊戲</h1>
 
-<h1>記憶翻牌遊戲</h1>
-<p>點擊卡片找出相同圖案</p>
-<p>時間：<span id="time">0</span> 秒</p>
-<p>翻牌次數：<span id="moves">0</span></p>
-<p>選擇難度：</p>
-<button onclick="startGame('easy')">簡單</button>
-<button onclick="startGame('hard')">困難</button>
+  <div>
+    <button onclick="setEasy()">簡單模式</button>
+    <button onclick="setHard()">困難模式</button>
+  </div>
 
+  <p>時間：<span id="time">0</span> 秒 ｜ 翻牌次數：<span id="moves">0</span></p>
 
-<div id="game"></div>
+  <div id="game"></div>
 
-<script>
-let time = 0;
-setInterval(() => {
-  time++;
-  document.getElementById('time').innerText = time;
-}, 1000);
+  <script>
+    // ====== 狀態 ======
+    let cards = [];
+    const easyCards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
+    const hardCards = ['🍎','🍎','🍌','🍌','🍇','🍇','🍉','🍉','🍓','🍓'];
 
-  const easyCards = ['🍎','🍎','🍌','🍌','🍇','🍇'];
-  const hardCards = ['🍎','🍎','🍌','🍌','🍇','🍇','🍉','🍉'];
-  let flipped = [];
+    let flipped = [];
+    let moves = 0;
 
-  function shuffle(arr){
-    return arr.sort(() => 0.5 - Math.random());
-  }
+    let time = 0;
+    let timerId = null;
 
-  function createGame(){
-    const game = document.getElementById('game');
-    shuffle(cards).forEach(symbol => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerText = '?';
-      card.onclick = () => flip(card, symbol);
-      game.appendChild(card);
-    });
-  }
+    function $(id){ return document.getElementById(id); }
 
-  function flip(card, symbol){
-    if(flipped.length < 2){
+    function shuffle(arr){
+      return [...arr].sort(() => 0.5 - Math.random());
+    }
+
+    function createGame(){
+      const game = $('game');
+      game.innerHTML = '';
+      shuffle(cards).forEach(symbol => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerText = '?';
+        card.onclick = () => flip(card, symbol);
+        game.appendChild(card);
+      });
+    }
+
+    function startGame(){
+      flipped = [];
+      moves = 0;
+      $('moves').innerText = moves;
+
+      if(timerId) clearInterval(timerId);
+      time = 0;
+      $('time').innerText = time;
+      timerId = setInterval(() => {
+        time++;
+        $('time').innerText = time;
+      }, 1000);
+
+      createGame();
+    }
+
+    function flip(card, symbol){
+      if(card.innerText !== '?' || flipped.length >= 2) return;
+
       card.innerText = symbol;
       flipped.push({card, symbol});
-    }
-    if(flipped.length === 2){
-      if(flipped[0].symbol !== flipped[1].symbol){
-        setTimeout(() => {
-          flipped.forEach(c => c.card.innerText = '?');
+
+      moves++;
+      $('moves').innerText = moves;
+
+      if(flipped.length === 2){
+        const [a, b] = flipped;
+        if(a.symbol !== b.symbol){
+          setTimeout(() => {
+            a.card.innerText = '?';
+            b.card.innerText = '?';
+            flipped = [];
+          }, 800);
+        } else {
           flipped = [];
-        }, 800);
-      } else {
-        flipped = [];
+        }
       }
     }
-  }
 
-  createGame();
-</script>
+    function setEasy(){ cards = easyCards; startGame(); }
+    function setHard(){ cards = hardCards; startGame(); }
 
+    // 預設先開簡單
+    setEasy();
+  </script>
 </body>
 </html>
+
