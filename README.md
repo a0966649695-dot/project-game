@@ -15,6 +15,12 @@
 - Git、GitHub
 - ChatGPT（輔助程式撰寫與說明）
 
+## 使用技術
+- HTML
+- CSS
+- JavaScript
+- Git / GitHub
+
 ## 遊戲玩法
 1. 遊戲開始後，畫面會顯示多張背面卡片
 2. 玩家每次可翻開兩張卡片
